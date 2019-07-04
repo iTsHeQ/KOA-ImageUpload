@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const asyncBusboy = require('async-busboy');
 const util = require('util');
 const fs = require('fs');
+const uploadFile = require('../middlewares/uploadFile');
 
 
 let controller = {
@@ -37,17 +38,19 @@ let controller = {
 
     uploadPicture: async (ctx, next) => {
         console.log("Picture");
-
+        const f = ctx.request.upload;
+       
+       
         try {
-            const {files, fields} = await asyncBusboy(ctx.req);
-            console.log(files);
-            console.log(fields);
-            if(checkFiles(fields)){
-                files.map(files)
-            }else {
-                return 'error';
-            }
-            console.log(stream);
+            const {file, fields} = await asyncBusboy(ctx.req);
+           
+            const { key, url } = await uploadFile({
+                fileName: file.name,
+                filePath: file.path,
+                fileType: file.type,
+            });
+            ctx.body = { key, url };
+ 
         } catch (err) {
             console.log(err);
             ctx.status = 400;
