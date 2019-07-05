@@ -22,10 +22,13 @@ let controller = {
      *     requestBody:
      *       required: true
      *       content:
-     *         image/png:
-     *           schema:
-     *            type: string
-     *            format: binary
+     *         multipart/form-data:
+     *          schema: 
+     *           type: object 
+     *           properties: 
+     *            image: 
+     *             type: string
+     *             format: binary
      *     responses:
      *       '201':
      *         description: Book created
@@ -38,18 +41,20 @@ let controller = {
 
     uploadPicture: async (ctx, next) => {
         console.log("Picture");
-        const f = ctx.request.upload;
+        //const f = ctx.request.upload;
+        console.log(ctx.request.files);
        
        
         try {
-            const {file, fields} = await asyncBusboy(ctx.req);
-           
-            const { key, url } = await uploadFile({
+           console.log(ctx.request.files);
+            const file = ctx.request.files.image;
+            const { key, Location } = await uploadFile({
                 fileName: file.name,
                 filePath: file.path,
                 fileType: file.type,
             });
-            ctx.body = { key, url };
+            ctx.body = { key, Location };
+           
  
         } catch (err) {
             console.log(err);

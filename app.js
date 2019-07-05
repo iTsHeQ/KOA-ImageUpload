@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
+const koaBody = require('koa-body');
 const Router = require('koa-router');
 const Swagger = require('./middlewares/swagger');
 const SwaggerUi = require('koa2-swagger-ui');
@@ -47,6 +48,7 @@ app
     .use(swagger)
     .use(swaggerUi)
     .use(bodyParser())
+    .use(koaBody({multipart: true}))
     .use(router.routes())
     .use(router.allowedMethods())
     .listen(3010);
